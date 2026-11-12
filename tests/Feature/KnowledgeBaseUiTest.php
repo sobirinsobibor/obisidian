@@ -63,6 +63,7 @@ class KnowledgeBaseUiTest extends TestCase
         $author = User::factory()->create();
         $reviewer = User::factory()->create();
         $space = Space::create(['name' => 'Support', 'slug' => 'support']);
+        $space->users()->attach($reviewer->id, ['role' => SpaceRole::REVIEWER->value]);
 
         $note = Note::create([
             'title' => 'Panduan Jaringan',
@@ -89,5 +90,15 @@ class KnowledgeBaseUiTest extends TestCase
         $responseShow = $this->actingAs($reviewer)->get(route('reviews.show', $review->id));
         $responseShow->assertStatus(200);
         $responseShow->assertInertia(fn ($page) => $page->component('Reviews/Show'));
+    }
+
+    public function test_pure_contributor_cannot_access_reviews_queue_directly()
+    {
+        $contributor = User::factory()->create();
+        $space = Space::create(['name' => 'Support', 'slug' => 'support']);
+        $space->users()->attach($contributor->id, ['role' => SpaceRole::CONTRIBUTOR->value]);
+
+        $response = $this->actingAs($contributor)->get(route('reviews.index'));
+        $response->assertStatus(403);
     }
 }

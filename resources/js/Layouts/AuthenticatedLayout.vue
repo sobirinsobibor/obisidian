@@ -39,7 +39,11 @@ const page = usePage();
                             <NavLink :href="route('spaces.index')" :active="route().current('spaces.*')">
                                 Spaces
                             </NavLink>
-                            <NavLink :href="route('reviews.index')" :active="route().current('reviews.*')">
+                            <NavLink
+                                v-if="$page.props.auth.can_review"
+                                :href="route('reviews.index')"
+                                :active="route().current('reviews.*')"
+                            >
                                 Antrean Review
                             </NavLink>
                         </div>
@@ -118,7 +122,11 @@ const page = usePage();
                     <ResponsiveNavLink :href="route('spaces.index')" :active="route().current('spaces.*')">
                         Spaces
                     </ResponsiveNavLink>
-                    <ResponsiveNavLink :href="route('reviews.index')" :active="route().current('reviews.*')">
+                    <ResponsiveNavLink
+                        v-if="$page.props.auth.can_review"
+                        :href="route('reviews.index')"
+                        :active="route().current('reviews.*')"
+                    >
                         Antrean Review
                     </ResponsiveNavLink>
                     <ResponsiveNavLink :href="route('notes.create')">

@@ -53,11 +53,7 @@ class DashboardController extends Controller
 
         // 4. Pending Review Queue for this user
         // Accessible if user is admin, or has reviewer/publisher role in any space
-        $canReview = $user->isGlobalAdmin() || $user->spaces()->wherePivotIn('role', [
-            SpaceRole::REVIEWER->value,
-            SpaceRole::PUBLISHER->value,
-            SpaceRole::ADMIN->value,
-        ])->exists();
+        $canReview = $user->canReviewAnySpace();
 
         $pendingReviews = [];
         if ($canReview) {

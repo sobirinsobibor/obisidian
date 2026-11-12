@@ -112,4 +112,17 @@ class User extends Authenticatable
 
         return in_array($userRole, $roles, true);
     }
+
+    public function canReviewAnySpace(): bool
+    {
+        if ($this->isGlobalAdmin()) {
+            return true;
+        }
+
+        return $this->spaces()->wherePivotIn('role', [
+            SpaceRole::REVIEWER->value,
+            SpaceRole::PUBLISHER->value,
+            SpaceRole::ADMIN->value,
+        ])->exists();
+    }
 }

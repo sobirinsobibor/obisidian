@@ -26,6 +26,7 @@ class ReviewController extends Controller
     public function index(Request $request): Response
     {
         $user = $request->user();
+        abort_if(! $user->canReviewAnySpace(), 403, 'Anda tidak memiliki hak akses untuk meninjau dokumen.');
 
         $reviews = NoteReview::with(['note.space', 'note.owner', 'requester'])
             ->where('status', ReviewStatus::PENDING)
@@ -55,6 +56,9 @@ class ReviewController extends Controller
      */
     public function show(NoteReview $review, Request $request): Response
     {
+        $user = $request->user();
+        abort_if(! $user->canReviewAnySpace(), 403, 'Anda tidak memiliki hak akses untuk meninjau dokumen.');
+
         $review->load([
             'note.space',
             'note.owner',
